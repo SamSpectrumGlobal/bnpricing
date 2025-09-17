@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxNiIgZmlsbD0iIzJlN2QzMiIvPjx0ZXh0IHg9IjE2IiB5PSIyMSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iMTIiPkJOPC90ZXh0Pjwvc3ZnPg==" type="image/svg+xml">
+<!-- Add Customer Details Button -->
+<button onclick="openCustomerForm()" id="addCustomerBtn" style="margin:20px 0; font-weight:bold; background:#27ae60; color:white; border:none; padding:10px 18px; border-radius:5px; cursor:pointer;">
+  Add Customer Details
+</button>
+
+<!-- Customer Details Popup Form -->
+<div id="customerFormPopup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); z-index:9999;">
+  <div style="
+    background:white;
+    max-width:420px;
+    margin:60px auto;
+    padding:30px 24px;
+    border-radius:10px;
+    box-shadow:0 4px 24px rgba(0,0,0,0.18);
+    position:relative;
+    max-height:80vh;
+    overflow-y:auto;
+    ">
+    <span onclick="closeCustomerForm()" style="position:absolute; top:16px; right:24px; font-size:22px; cursor:pointer;">&times;</span>
+    <h2 style="margin-top:0;">Customer Details</h2>
+    <form id="customerDetailsForm" autocomplete="off">
+      <label for="userName"><b>User Name</b></label>
+      <input type="text" id="userName" name="userName" required style="width:100%; margin-bottom:12px; padding:7px;">
+
+      <label for="userId"><b>User ID</b></label>
+      <input type="text" id="userId" name="userId" readonly style="width:100%; margin-bottom:12px; padding:7px; background:#eafaf1; font-weight:bold; color:#1a5276;">
+
+      <label for="orderId" style="font-weight:bold; color:#c0392b; background:#fcf3cf; padding:3px 5px; border-radius:3px;">
+        Order ID
+      </label>
+      <input type="text" id="orderId" name="orderId" readonly style="width:100%; margin-bottom:12px; padding:7px; font-weight:bold; color:#c0392b; background:#fcf3cf; border:2px solid #c0392b;">
+
+      <label for="orderDate"><b>Date</b></label>
+      <input type="text" id="orderDate" name="orderDate" readonly style="width:100%; margin-bottom:12px; padding:7px; background:#f8f9f9;">
+
+      <label for="customerName"><b>Name</b></label>
+      <input type="text" id="customerName" name="customerName" required style="width:100%; margin-bottom:12px; padding:7px;">
+
+      <label for="customerAge"><b>Age</b></label>
+      <input type="number" id="customerAge" name="customerAge" min="0" required style="width:100%; margin-bottom:12px; padding:7px;">
+
+      <label for="customerContact" style="font-weight:bold; color:#c0392b; background:#fcf3cf; padding:3px 5px; border-radius:3px;">
+        Contact Number (ID)
+      </label>
+      <input type="tel" id="customerContact" name="customerContact" required
+        style="width:100%; margin-bottom:12px; padding:7px; font-weight:bold; color:#c0392b; background:#fcf3cf; border:2px solid #c0392b;">
+
+      <label for="customerAddress"><b>Address</b></label>
+      <input type="text" id="customerAddress" name="customerAddress" required style="width:100%; margin-bottom:12px; padding:7px;">
+
+      <label for="customerQuantity"><b>Quantity</b></label>
+      <input type="number" id="customerQuantity" name="customerQuantity" value="1" min="1" required style="width:100%; margin-bottom:18px; padding:7px;">
+
+      <button type="submit" style="background:#27ae60; color:white; border:none; padding:10px 18px; border-radius:5px; font-weight:bold; cursor:pointer;">
+        Submit
+      </button>
+      <button type="button" onclick="closeCustomerForm()" style="background:#e74c3c; color:white; border:none; padding:10px 18px; border-radius:5px; margin-left:10px; cursor:pointer;">
+        Cancel
+      </button>
+    </form>
+  </div>
+</div>
+<title>Mattress Price Calculator by David</title>
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e8f5e9; /* Pale green background */
+        }
+        .calculator {
+            max-width: 900px;
+            margin: 30px auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-right: 15px;
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #2e7d32;
+        }
+        .company-name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+        .section {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f8f8;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .hidden {
+            display: none;
+        }
+        .popup {
+    max-height: 80vh;
+    overflow-y: auto;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+        .button-group {
+            margin-top: 20px;
+        }
+        .options-section {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f8f8;
+        }
+        .price-highlight {
+            color: #2196F3;
+            font-size: 1.2em;
+        }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script></head>
+<body>
+<div class="calculator">
+<div class="header">
+<div class="logo">BN</div>
+<div class="company-name">BareNature</div>
+</div>
+<h1>Mattress Price Calculator</h1>
+<div class="section">
+<h2>Configure Mattress Layers</h2>
+<div id="layersContainer"></div>
+<button onclick="addLayer()">Add Layer</button>
+<button onclick="removeLastLayer()" style="background-color: #f44336;">Remove Layer</button>
+</div>
+<div class="options-section">
+<h2>Additional Options</h2>
+<label>
+<input checked="" id="includePillows" type="checkbox"/> Include Pillows (₹1500)
+            </label>
+<label>
+<input checked="" id="includeCover" type="checkbox"/> Include Cover (₹1000 base + ₹200 per inch)*
+            </label>
+<label>
+<input checked="" id="includeComforter" type="checkbox"/> Include Comforter (₹1000)*
+            </label>
+<label>
+<input checked="" id="includeTransport" type="checkbox"/> Include Transport (₹1000)*
+            </label>
+</div>
+<div class="button-group">
+<button onclick="calculateTotalPrice()">Calculate Total Price</button>
+<button onclick="resetCalculator()" style="background-color: #f44336;">Reset</button>
+</div>
+</div>
+<div class="overlay" id="overlay"></div>
+<div class="popup" id="popup">
+<h2>Total Price</h2>
+<div id="popupContent" style="line-height: 1.2; padding: 4px;">
+  <div id="customerSummary" style="margin-bottom: 20px;"></div>
+  <div id="priceSummary"></div>
+</div>
+<button onclick="closePopup()">Close</button>
+<a href="https://wa.me/919585256688" target="_blank"><button style="background-color: #25D366; color: white; margin-top: 10px;">📤 Share on WhatsApp</button></a><button onclick="downloadAsImage()" style="margin-left: 10px;">📸 Download as Image</button>
+<button onclick="printPopup()">🖨️ Print</button></div>
+<script>
+        const priceMap = {
+            "9 LD": 5.18, "13 D Premium Roll": 6.3, "16D Roll": 7.2, "18D Roll": 8.1,
+            "23D Roll Pure": 10.8, "14D Regular": 6.6, "16D Regular": 7.2, "16D Commercial": 6.7,
+            "23D Pure": 10.6, "28D Pure": 12.6, "32D Pure": 14.4, "40D Pure": 18.0,
+            "50D Pure": 22.5, "18D Premium": 7.8, "23D Premium": 9.3, "28D Premium": 11.1,
+            "32D Premium": 12.7, "40D Premium": 15.8, "50D Premium": 19.8, "23D Supersoft": 10.1,
+            "32D Supersoft": 13.8, "32D Supersoft with gel": 15.1, "18 D Commercial": 7.1,
+            "23 D Commercial": 8.8, "28D Commercial": 10.4, "32 D Commercial": 11.8,
+            "40 D Commercial": 14.8, "23D Event": 7.9, "28D Event": 9.3, "32D Event": 10.7,
+            "23D Hard Foam": 10.6, "55 Density Memory (box)": 34.9, "65 Density Memory (box)": 41.2,
+            "30D HR (For Roll Pack)": 14.6, "40D Latex Feel Foam": 19.8, "50 Density Memory -Peeling (TDI)": 26.5,
+            "40 Density Memory (MDI)": 22.1, "32D FR": 17.0, "80 Bonded Foam": 13.7,
+            "60D Latex Feel MDI": 41.8,
+            "Structure with Foam (5 inch)": 123, "Structure with Foam (6.5 inch)": 128, "Structure with Foam (8 inch)": 133,
+            "Structure Only (5 inch)": 78, "Structure Only (6.5 inch)": 83, "Structure Only (8 inch)": 88,
+            "Structure with WB (5 inch)": 93, "Structure with WB (6.5 inch)": 98, "Structure with WB (8 inch)": 103,
+            "Structure with WB & FELT (5 inch)": 108, "Structure with WB & FELT (6.5 inch)": 113, "Structure with WB & FELT (8 inch)": 118
+        };
+
+        const latexPrices = {
+            65: {
+                36: { 1: 1142.71, 2: 2285.41, 3: 3428.12, 4: 4570.82, 5: 5713.53, 6: 6856.24 },
+                48: { 1: 1523.61, 2: 3047.22, 3: 4570.82, 4: 6094.43, 5: 7618.04, 6: 9141.65 },
+                60: { 1: 1904.51, 2: 3809.02, 3: 5713.53, 4: 7618.04, 5: 9522.55, 6: 11427.06 },
+                72: { 1: 2285.41, 2: 4570.82, 3: 6856.24, 4: 9141.65, 5: 11427.06, 6: 13712.47 }
+            },
+            75: {
+                36: { 1: 1318.52, 2: 2637.04, 3: 3955.56, 4: 5274.07, 5: 6592.59, 6: 7911.11 },
+                48: { 1: 1758.02, 2: 3516.05, 3: 5274.07, 4: 7032.10, 5: 8790.12, 6: 10548.15 },
+                60: { 1: 2197.53, 2: 4395.06, 3: 6592.59, 4: 8790.12, 5: 10987.65, 6: 13185.19 },
+                72: { 1: 2637.04, 2: 5274.07, 3: 7911.11, 4: 10548.15, 5: 13185.19, 6: 15822.22 }
+            },
+            85: {
+                36: { 1: 1493.59, 2: 2987.18, 3: 4480.77, 4: 5974.36, 5: 7467.95, 6: 8961.54, 8: 11948.72 },
+                48: { 1: 1991.45, 2: 3982.91, 3: 5974.36, 4: 7965.81, 5: 9957.26, 6: 11948.72, 8: 15931.62 },
+                60: { 1: 2489.32, 2: 4978.63, 3: 7467.95, 4: 9957.26, 5: 12446.58, 6: 14935.90, 8: 19914.53 },
+                72: { 1: 2987.18, 2: 5974.36, 3: 8961.54, 4: 11948.72, 5: 14935.90, 6: 17923.08, 8: 23897.44 }
+            },
+         90: {
+    36: {1: 1800, 2: 3600, 3: 5400, 4: 7200, 5: 9000, 6: 10800},
+    48: {1: 2400, 2: 4800, 3: 7200, 4: 9600, 5: 12000, 6: 14400},
+    60: {1: 3000, 2: 6000, 3: 9000, 4: 12000, 5: 15000, 6: 18000},
+    72: {1: 3600, 2: 7200, 3: 10800, 4: 14400, 5: 18000, 6: 21600}
+  }
+        };
+
+        function addLayer() {
+            const container = document.getElementById('layersContainer');
+            const section = document.createElement('div');
+            section.className = 'section';
+            section.innerHTML = `
+                <label>Material:</label>
+                <select class="description">
+                    ${Object.keys(priceMap).map(key => `<option value="${key}">${key}</option>`).join('')}
+                    <option value="Latex 65D">Latex 65D</option>
+                    <option value="Latex 75D" selected>Latex 75D</option>
+                    <option value="Latex 85D">Latex 85D</option>
+                    <option value="Latex 90D">Latex 90D</option>
+                </select>
+                <label>Length (inches):</label>
+                <input type="number" class="length" value="78" min="1">
+                <label>Width (inches):</label>
+                <input type="number" class="width" value="36" min="1">
+                <label>Height (inches):</label>
+                <input type="number" class="height" value="1" min="1">
+            `;
+            container.appendChild(section);
+        }
+
+        function resetCalculator() {
+    savedCustomerData = null;
+    document.getElementById('customerDetailsForm').reset();
+    document.getElementById('userId').value = '';
+    document.getElementById('orderId').value = '';
+    document.getElementById('orderDate').value = '';
+
+            document.getElementById('layersContainer').innerHTML = '';
+            document.getElementById('includePillows').checked = true;
+            document.getElementById('includeCover').checked = true;
+            document.getElementById('includeComforter').checked = true;
+            document.getElementById('includeTransport').checked = true;
+            addLayer(); // Add initial layer back after reset
+        }
+
+        function calculateTotalPrice() {
+            const sections = document.querySelectorAll('#layersContainer .section');
+            let total = 0;
+            let details = "";
+            let totalHeight = 0;
+            let mattressLength = 0;
+            let mattressWidth = 0;
+
+            // Calculate mattress layers
+            sections.forEach((sec, i) => {
+                const length = parseFloat(sec.querySelector('.length').value);
+                const width = parseFloat(sec.querySelector('.width').value);
+                const height = parseFloat(sec.querySelector('.height').value);
+                const description = sec.querySelector('.description').value;
+
+                // Set mattress dimensions based on first layer
+                if (i === 0) {
+                    mattressLength = length;
+                    mattressWidth = width;
+                }
+
+                totalHeight += height;
+
+                let price = 0;
+                if (description.startsWith("Latex")) {
+                    const density = parseInt(description.split(" ")[1]);
+                    const roundedWidth = [36, 48, 60, 72].reduce((a, b) => Math.abs(b - width) < Math.abs(a - width) ? b : a);
+                    let roundedHeight = Math.round(height);
+                    
+                    // For 85D, handle 8 inch height
+                    if (density === 85) {
+                        roundedHeight = Math.min(8, Math.max(1, roundedHeight));
+                    } else {
+                        roundedHeight = Math.min(6, Math.max(1, roundedHeight));
+                    }
+                    
+                    const priceTable = latexPrices[density];
+                    if (priceTable && priceTable[roundedWidth] && priceTable[roundedWidth][roundedHeight]) {
+                        price = priceTable[roundedWidth][roundedHeight];
+                        price *= (length * width) / (78 * roundedWidth);
+                    }
+                } else {
+                    const unitPrice = priceMap[description] || 0;
+                    const area = length * width;
+                    const heightMm = height * 25.4;
+                    price = unitPrice * heightMm * (area / (78 * 36));
+                }
+
+                total += price;
+                details += `Layer ${i + 1}: ${description}<br>Dimensions: ${length} x ${width} x ${height}"<br>Price: ₹${price.toFixed(2)}<br><br>`;
+            });
+
+            // Calculate area
+            const mattressArea = mattressLength * mattressWidth;
+
+            // Add pillows if selected
+            let pillowPrice = 0;
+            if (document.getElementById('includePillows').checked) {
+                pillowPrice = 1500;
+                total += pillowPrice;
+                details += `Pillows: ₹${pillowPrice.toFixed(2)}<br><br>`;
+            }
+
+            // Add cover if selected
+            let coverPrice = 0;
+            if (document.getElementById('includeCover').checked && totalHeight > 0) {
+                coverPrice = 1000 + (Math.max(1, Math.ceil(totalHeight)) - 1) * 200;
+                total += coverPrice;
+                details += `Cover: ₹1000 base + ₹200 per additional inch (${Math.ceil(totalHeight)}") = ₹${coverPrice.toFixed(2)}<br><br>`;
+            }
+
+            // Add comforter if selected
+            let comforterPrice = 0;
+            if (document.getElementById('includeComforter').checked) {
+                comforterPrice = 1000;
+                total += comforterPrice;
+                details += `Comforter: ₹${comforterPrice.toFixed(2)}<br><br>`;
+            }
+
+            // Add transport if selected
+            let transportPrice = 0;
+            if (document.getElementById('includeTransport').checked) {
+                transportPrice = 1000;
+                total += transportPrice;
+                details += `Transport: ₹${transportPrice.toFixed(2)}<br><br>`;
+            }
+
+            // Calculate tax (18%)
+            const quantity = savedCustomerData?.customerQuantity || 1;
+            total = total * quantity;
+            const tax = total * 0.18;
+            const totalWithTax = total + tax;
+
+            // Calculate dealer price (1.5x total with tax)
+            const dealerPrice = totalWithTax * 1.5;
+
+            // Calculate customer price (2x total with tax)
+            const customerPrice = totalWithTax * 2;
+
+            document.getElementById('priceSummary').innerHTML = `
+                <strong>Mattress Dimensions:</strong> ${mattressLength}" x ${mattressWidth}"<br>
+                <strong>Total Area:</strong> ${mattressArea} sq.in (${(mattressArea/144).toFixed(2)} sq.ft)<br>
+                <strong>Total Height:</strong> ${totalHeight.toFixed(1)}"<br><br>
+                ${details}
+                <strong>Subtotal: ₹${total.toFixed(2)}</strong><br>
+                <strong>Tax (18%): ₹${tax.toFixed(2)}</strong><br>
+                <strong>Total with Tax: ₹${totalWithTax.toFixed(2)}</strong><br>
+                <strong class="price-highlight">Dealer Price (1.5×): ₹${dealerPrice.toFixed(2)}</strong><br>
+                <strong class="price-highlight" style="color:#9C27B0;">Family Price (1.75×): ₹${(totalWithTax * 1.75).toFixed(2)}</strong><br>
+                <strong style="color: #4CAF50; font-size: 1.2em;">Customer Price (2×): ₹${customerPrice.toFixed(2)}</strong>
+            `;
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        
+        function removeLastLayer() {
+            const container = document.getElementById('layersContainer');
+            if (container.lastElementChild) {
+                container.removeChild(container.lastElementChild);
+            }
+        }
+
+
+        // Add initial layer when page loads
+        window.onload = addLayer;
+    
+
+function downloadAsImage() {
+    const content = document.getElementById("popupContent");
+    html2canvas(content).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "Mattress_Estimation.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    });
+}
+</script>
+<div class="section" style="text-align: center;">
+<h2>Contact Us</h2>
+<a href="https://wa.me/919585256688" style="text-decoration: none;" target="_blank">
+<button style="background-color: #25D366;">📱 WhatsApp</button>
+</a>
+<a href="mailto:barenatureindia@gmail.com" style="text-decoration: none;" target="_blank">
+<button style="background-color: #D44638;">📧 Gmail</button>
+</a>
+</div>
+<script>
+// Local storage keys
+const USER_NAME_KEY = 'bn_userName';
+const USER_ID_KEY = 'bn_userId';
+const ORDER_ID_KEY = 'bn_orderId';
+
+// Store customer data in a variable
+let savedCustomerData = null;
+
+// Helper to get today's date as YYYY-MM-DD
+function getTodayDate() {
+  const d = new Date();
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+// Open the form and auto-fill fields
+function openCustomerForm() {
+  const savedUserName = localStorage.getItem(USER_NAME_KEY) || '';
+  document.getElementById('userName').value = savedUserName;
+
+  let userId = localStorage.getItem(USER_ID_KEY);
+  if (!userId) {
+    userId = 'U' + Math.floor(1000 + Math.random() * 9000);
+    localStorage.setItem(USER_ID_KEY, userId);
+  }
+  document.getElementById('userId').value = userId;
+
+  let orderId = localStorage.getItem(ORDER_ID_KEY);
+  if (!orderId) {
+    orderId = 'O' + Math.floor(10000 + Math.random() * 90000);
+    localStorage.setItem(ORDER_ID_KEY, orderId);
+  } else {
+    let num = parseInt(orderId.slice(1)) + 1;
+    orderId = 'O' + num;
+    localStorage.setItem(ORDER_ID_KEY, orderId);
+  }
+  document.getElementById('orderId').value = orderId;
+
+  document.getElementById('orderDate').value = getTodayDate();
+  document.getElementById('customerFormPopup').style.display = 'block';
+}
+
+document.getElementById('userName').addEventListener('change', function() {
+  localStorage.setItem(USER_NAME_KEY, this.value);
+});
+
+function closeCustomerForm() {
+  document.getElementById('customerFormPopup').style.display = 'none';
+}
+
+// Handle form submission
+document.getElementById('customerDetailsForm').onsubmit = function(e) {
+  e.preventDefault();
+  // Gather form data
+  savedCustomerData = {
+    userName: document.getElementById('userName').value,
+    userId: document.getElementById('userId').value,
+    orderId: document.getElementById('orderId').value,
+    orderDate: document.getElementById('orderDate').value,
+    customerName: document.getElementById('customerName').value,
+    customerAge: document.getElementById('customerAge').value,
+    customerContact: document.getElementById('customerContact').value,
+    customerAddress: document.getElementById('customerAddress').value,
+    customerQuantity: parseInt(document.getElementById('customerQuantity').value) || 1
+  };
+  closeCustomerForm();
+  showCustomerDetailsInTotalPricePopup();
+};
+
+// Function to build customer summary HTML
+function getCustomerSummaryHTML(data) {
+  if (!data) return '';
+  return `
+    <div style="margin-bottom:8px;"><b>User Name:</b> ${data.userName}</div>
+    <div style="margin-bottom:8px;"><b>User ID:</b> <span style="font-weight:bold; color:#1a5276;">${data.userId}</span></div>
+    <div style="margin-bottom:8px;"><b style="color:#c0392b; background:#fcf3cf; padding:2px 5px; border-radius:3px;">Order ID:</b>
+      <span style="font-weight:bold; color:#c0392b;">${data.orderId}</span>
+    </div>
+    <div style="margin-bottom:8px;"><b>Date:</b> ${data.orderDate}</div>
+    <div style="margin-bottom:8px;"><b>Name:</b> ${data.customerName}</div>
+    <div style="margin-bottom:8px;"><b>Age:</b> ${data.customerAge}</div>
+    <div style="margin-bottom:8px;"><b style="color:#c0392b; background:#fcf3cf; padding:2px 5px; border-radius:3px;">Contact Number (ID):</b>
+      <span style="font-weight:bold; color:#c0392b;">${data.customerContact}</span>
+    </div>
+    <div style="margin-bottom:4px;"><b>Address:</b> ${data.customerAddress}</div>
+    <div style="margin-bottom:4px;"><b>Quantity:</b> ${data.customerQuantity}</div>
+  `;
+}
+
+// Hook into your "Calculate Total Price" popup logic
+// You must call this function (or add this code) when showing the total price popup!
+function showCustomerDetailsInTotalPricePopup() {
+  const summaryDiv = document.getElementById('customerSummary');
+  if (savedCustomerData) {
+    summaryDiv.innerHTML = getCustomerSummaryHTML(savedCustomerData);
+    summaryDiv.style.display = 'block';
+  } else {
+    summaryDiv.innerHTML = '';
+    summaryDiv.style.display = 'none';
+  }
+}
+
+// Example: If you have a function that shows the total price popup, call this inside it
+// showCustomerDetailsInTotalPricePopup();
+
+
+// --- If you want to auto-show details when "Calculate Total Price" is clicked ---
+// Find your "Calculate Total Price" button and add an onclick handler:
+document.addEventListener('DOMContentLoaded', function() {
+  // Replace with your actual button ID or selector if different
+  const calcBtn = document.querySelector('button, input[type=button], input[type=submit]');
+  if (calcBtn) {
+    calcBtn.addEventListener('click', function() {
+      // Slight delay if your popup opens with animation, or call after popup is visible
+      setTimeout(showCustomerDetailsInTotalPricePopup, 100);
+    });
+  }
+});
+
+function getCurrentTimestamp() {
+    const now = new Date();
+    return now.toLocaleDateString() + ' ' + now.toLocaleTimeString(); // Includes seconds
+}
+
+function downloadAsImage(triggeredByPrint = false) {
+    const content = document.getElementById("popupContent");
+
+    // Append timestamp temporarily
+    const timestampDiv = document.createElement("div");
+    timestampDiv.id = "downloadTimestamp";
+    timestampDiv.style.marginTop = "20px";
+    timestampDiv.style.fontSize = "0.9em";
+    timestampDiv.style.color = "#555";
+    timestampDiv.textContent = "Generated at: " + getCurrentTimestamp();
+    content.appendChild(timestampDiv);
+
+    html2canvas(content).then(canvas => {
+        const link = document.createElement("a");
+        const customerName = savedCustomerData?.customerName?.replace(/\s+/g, "_") || "Customer";
+        const orderId = savedCustomerData?.orderId || "Order";
+        link.download = `${customerName}_${orderId}.png`;
+        link.href = canvas.toDataURL("image/png");
+        if (!triggeredByPrint) link.click();
+        document.body.appendChild(link);
+    }).finally(() => {
+        content.removeChild(timestampDiv);
+    });
+}
+
+function printPopup() {
+    const customerName = savedCustomerData?.customerName?.replace(/\s+/g, "_") || "Customer";
+    const orderId = savedCustomerData?.orderId || "Order";
+    const filename = `${customerName}_${orderId}.png`;
+    downloadAsImage(true); // Automatically download image before printing
+    setTimeout(() => {
+        const printContent = document.getElementById("popupContent").cloneNode(true);
+        const timestamp = document.createElement("div");
+        timestamp.style.marginTop = "20px";
+        timestamp.style.fontSize = "0.9em";
+        timestamp.style.color = "#555";
+        timestamp.textContent = "Printed at: " + getCurrentTimestamp();
+        printContent.appendChild(timestamp);
+
+        const win = window.open('', '_blank');
+        win.document.write(`<!-- filename: ${filename} -->\n
+            <html>
+            <head><title>Print</title></head>
+            <body>${printContent.innerHTML}</body>
+            </html>
+        `);
+        win.document.close();
+        win.focus();
+        win.print();
+        win.close();
+    }, 300);
+}
+
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js', { scope: './' })
+    .then(reg => console.log('SW registered:', reg))
+    .catch(err => console.log('SW registration failed:', err));
+}
+</script>
+</body>
+</html>
